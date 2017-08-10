@@ -1,4 +1,4 @@
-A user interface for the Apache Point Observatory 2.5m telescope
+A user interface for SDSS operations using the du Pont telescope
 
 Documentation includes:
 
