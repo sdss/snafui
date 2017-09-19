@@ -132,6 +132,8 @@ class BMODS9Wdg(Tkinter.Frame):
         self.gridder = RO.Wdg.Gridder(master=self, sticky='w')
         self.statusBar = statusBar
 
+        self.actor = master.actor
+
         self.connectBtn = RO.Wdg.Button(
             master=self,
             text='Connect',
@@ -154,7 +156,7 @@ class BMODS9Wdg(Tkinter.Frame):
         self.showChartBtn = RO.Wdg.Button(
             master=self,
             text='Show',
-            command=self.resetDS9,
+            command=self.showCharts,
             helpText='Show chart')
 
         self.gridder.gridWdg('Show charts', (self.showChartPlateEntry, self.showChartBtn),
@@ -169,7 +171,13 @@ class BMODS9Wdg(Tkinter.Frame):
         pass
 
     def showCharts(self):
-        pass
+        """Shows finding charts in DS9."""
+
+        showChartsCmdVar = opscore.actor.CmdVar(
+            actor=self.actor,
+            cmdStr='ds9 show_chart {0}'.format(self.showChartPlateEntry.getString()))
+
+        self.statusBar.doCmd(showChartsCmdVar)
 
 
 class BMOWdg(Tkinter.Frame):
@@ -245,10 +253,10 @@ class BMOWdg(Tkinter.Frame):
     def startExposure(self):
         """Start exposure."""
 
-        stopCmdVar = opscore.actor.CmdVar(
+        startCmdVar = opscore.actor.CmdVar(
             actor=self.actor,
             cmdStr='expose start')
-        self.statusBar.doCmd(stopCmdVar)
+        self.statusBar.doCmd(startCmdVar)
 
     def stopExposure(self):
         """Stop exposure."""
