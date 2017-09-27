@@ -1556,11 +1556,25 @@ class LoadCartridgeCommandWdgSetSet(CommandWdgSet):
             helpText = "survey mode from guider",
             helpURL = helpURL,
         )
-        self.surveyWdg.grid(row = 0, column = col)
+        self.surveyWdg.grid(row=0, column=col)
+        col += 1
+
+        # add in the apogee single/double exptime
+        self.exptimeWdg = RO.Wdg.StrLabel(
+            master=self.commandFrame,
+            helpText='apogee single or double length exposure',
+            helpURL=helpURL,
+        )
+        self.exptimeWdg.grid(row=0, column=col)
+
+        # move to the next column
         col += 1
 
         guiderModel = TUI.Models.getModel("guider")
         guiderModel.survey.addCallback(self._surveyCallback)
+        platedbModel = TUI.Models.getModel("platedb")
+        platedbModel.apogeeDesign.addCallback(self._apodesignCallback)
+
         return col
 
     def _surveyCallback(self, survey):
@@ -1577,3 +1591,15 @@ class LoadCartridgeCommandWdgSetSet(CommandWdgSet):
             surveyStrList.append(survey[1])
         surveyStr = "-".join(surveyStrList)
         self.surveyWdg.set(surveyStr, isCurrent=survey.isCurrent)
+
+    def _apodesignCallback(self, apogeedesign):
+        ''' Callback for the platedb.apogeeDesign keyvar '''
+
+        if apogeedesign[1] == 500:
+            explength = '(AB)'
+        elif apogeedesign[1] == 1000:
+            explength = '(DAB)'
+        else:
+            explength = ''
+
+        self.exptimeWdg.set(explength, isCurrent=apogeedesign.isCurrent)
