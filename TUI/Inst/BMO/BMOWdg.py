@@ -69,10 +69,12 @@ class BMOStatusWdg(Tkinter.Frame):
         strOn = '{}{}'.format('Connected' if cameraOn is True else 'Disconnected',
                               ' ({})'.format(deviceOn) if cameraOn is True else '')
         self.onCameraWdg.set(strOn, isCurrent=keyVar.isCurrent)
+        self.onCameraWdg.config(fg='black' if cameraOn else 'red')
 
         strOff = '{}{}'.format('Connected' if cameraOff is True else 'Disconnected',
                                ' ({})'.format(deviceOff) if cameraOff is True else '')
         self.offCameraWdg.set(strOff, isCurrent=keyVar.isCurrent)
+        self.offCameraWdg.config(fg='black' if cameraOff else 'red')
 
     def _bmoVimbaStateCallback(self, keyVar):
         """Callback to set Vimba state."""
