@@ -47,6 +47,14 @@ class BMOStatusWdg(Tkinter.Frame):
             width=30)
         gridder.gridWdg('Off-axis camera', self.offCameraWdg)
 
+        self.versionWdg = RO.Wdg.StrLabel(
+            master=self,
+            helpText='Version of the BMO actor',
+            helpURL='',
+            anchor='w',
+            width=10)
+        gridder.gridWdg('Actor version', self.versionWdg)
+
         self.vimbaWdg = RO.Wdg.StrLabel(
             master=self,
             helpText='Status of the Vimba controller',
@@ -61,6 +69,12 @@ class BMOStatusWdg(Tkinter.Frame):
 
         self.model.bmoCamera.addCallback(self._bmoCameraCallback)
         self.model.bmoVimbaState.addCallback(self._bmoVimbaStateCallback)
+        self.model.version.addCallback(self._setVersion)
+
+    def _setVersion(self, keyVar):
+        """Sets actor version."""
+
+        self.versionWdg.set(keyVar[0])
 
     def _bmoCameraCallback(self, keyVar):
         """Callback to set camera state."""
@@ -72,18 +86,10 @@ class BMOStatusWdg(Tkinter.Frame):
         self.onCameraWdg.set(strOn, isCurrent=keyVar.isCurrent)
         self.onCameraWdg.config(fg='black' if cameraOn else 'red')
 
-        # Sets exposure on-axis camera checkbox
-        self.master.exposureWdg.exposureOnCheck.setBool(cameraOn)
-        self.master.exposureWdg.exposureOnCheck.setEnable(cameraOn)
-
         strOff = '{}{}'.format('Connected' if cameraOff is True else 'Disconnected',
                                ' ({})'.format(deviceOff) if cameraOff is True else '')
         self.offCameraWdg.set(strOff, isCurrent=keyVar.isCurrent)
         self.offCameraWdg.config(fg='black' if cameraOff else 'red')
-
-        # Sets exposure off-axis camera checkbox
-        self.master.exposureWdg.exposureOffCheck.setBool(cameraOff)
-        self.master.exposureWdg.exposureOffCheck.setEnable(cameraOff)
 
     def _bmoVimbaStateCallback(self, keyVar):
         """Callback to set Vimba state."""
@@ -104,6 +110,7 @@ class BMOExposureWdg(Tkinter.Frame):
 
         self.gridder = RO.Wdg.Gridder(master=self, sticky='w')
 
+        self.master = master
         self.exposureFrame = Tkinter.Frame(self)
 
         self.exposureTimeEntry = RO.Wdg.StrEntry(
@@ -132,6 +139,13 @@ class BMOExposureWdg(Tkinter.Frame):
             helpText='Expose the off-axis camera?')
         self.exposureOffCheck.pack(side='left')
 
+        self.exposureTimeSetBtn = RO.Wdg.Button(
+            master=self.exposureFrame,
+            text='Set',
+            command=self.setExposureTime,
+            helpText='Set exposure time')
+        self.exposureTimeSetBtn.pack(side='left')
+
         self.gridder.gridWdg('Exposure Time', self.exposureFrame)
 
         self.subtractBackCheck = RO.Wdg.Checkbutton(
@@ -149,6 +163,47 @@ class BMOExposureWdg(Tkinter.Frame):
         self.gridder.gridWdg('', self.singleExposureCheck)
 
         self.gridder.allGridded()
+
+        self.master.model.bmoCamera.addCallback(self._bmoCameraCallback)
+
+    def _bmoCameraCallback(self, keyVar):
+        """Callback to set camera state."""
+
+        cameraOn, cameraOff, __, __ = keyVar
+
+        # Sets exposure on-axis camera checkbox
+        self.exposureOnCheck.setBool(cameraOn)
+        self.exposureOnCheck.setEnable(cameraOn)
+
+        # Sets exposure off-axis camera checkbox
+        self.exposureOffCheck.setBool(cameraOff)
+        self.exposureOffCheck.setEnable(cameraOff)
+
+    def setExposureTime(self):
+        """Sets exposure time."""
+
+        exptime_string = self.exposureTimeEntry.getString().strip()
+        if exptime_string == '':
+            raise ValueError('invalid exposure time(s).')
+
+        exptimes = list(map(lambda xx: float(xx.strip()), exptime_string.split(',')))
+
+        if len(exptimes) > 2:
+            raise ValueError('too many exposure times.')
+
+        doExpose = [self.exposureOnCheck.getBool(), self.exposureOffCheck.getBool()]
+
+        for ii, value in enumerate(['on', 'off']):
+            if not doExpose[ii]:
+                pass
+
+            exptime = exptimes[ii if len(exptimes) > 1 else 0]
+
+            exptimeCmdVar = opscore.actor.CmdVar(
+                actor=self.master.actor,
+                cmdStr='camera exptime --camera_type={} {:.1f}'.format(value, exptime))
+
+            self.master.statusBar.doCmd(exptimeCmdVar)
 
 
 class BMODS9Wdg(Tkinter.Frame):
