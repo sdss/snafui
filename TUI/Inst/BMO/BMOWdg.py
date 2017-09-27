@@ -58,12 +58,30 @@ class BMOStatusWdg(Tkinter.Frame):
 
         gridder.allGridded()
 
+        self.model.bmoCamera.addCallback(self._bmoCameraCallback)
         self.model.bmoVimbaState.addCallback(self._bmoVimbaStateCallback)
+
+    def _bmoCameraCallback(self, keyVar):
+        """Callback to set camera state."""
+
+        cameraOn, cameraOff, deviceOn, deviceOff = keyVar
+
+        strOn = '{}{}'.format('Connected' if cameraOn is True else 'Disconnected',
+                              ' ({})'.format(deviceOn) if cameraOn is True else '')
+        self.onCameraWdg.set(strOn, isCurrent=keyVar.isCurrent)
+
+        strOff = '{}{}'.format('Connected' if cameraOff is True else 'Disconnected',
+                               ' ({})'.format(deviceOff) if cameraOff is True else '')
+        self.offCameraWdg.set(strOff, isCurrent=keyVar.isCurrent)
 
     def _bmoVimbaStateCallback(self, keyVar):
         """Callback to set Vimba state."""
 
-        self.vimbaWdg.set(keyVar[0], isCurrent=keyVar.isCurrent)
+        vimbaState = keyVar[0]
+        fg = 'black' if vimbaState != 'Fake' else 'red'
+
+        self.vimbaWdg.set(vimbaState, isCurrent=keyVar.isCurrent)
+        self.vimbaWdg.config(fg=fg)
 
 
 class BMOExposureWdg(Tkinter.Frame):
@@ -165,10 +183,22 @@ class BMODS9Wdg(Tkinter.Frame):
         self.gridder.allGridded()
 
     def connectDS9(self):
-        pass
+        """Connects DS9."""
+
+        connectCmdVar = opscore.actor.CmdVar(
+            actor=self.actor,
+            cmdStr='ds9 connect')
+
+        self.statusBar.doCmd(connectCmdVar)
 
     def resetDS9(self):
-        pass
+        """Resets DS9."""
+
+        resetCmdVar = opscore.actor.CmdVar(
+            actor=self.actor,
+            cmdStr='ds9 reset')
+
+        self.statusBar.doCmd(resetCmdVar)
 
     def showCharts(self):
         """Shows finding charts in DS9."""
@@ -230,7 +260,7 @@ class BMOWdg(Tkinter.Frame):
         buttonFrame.grid(row=row, column=0, sticky='ew')
         row += 1
 
-        # self.model.exposureState.addCallback(self.enableButtons)
+        self.model.bmoExposeState.addCallback(self.enableButtons)
 
         self.enableButtons()
 
@@ -242,20 +272,19 @@ class BMOWdg(Tkinter.Frame):
     def enableButtons(self, *dumArgs):
         """Enable or disable widgets as appropriate."""
 
-        # isExposing = self.model.exposureState[0] in self.RunningExposureStates
-        # isRunning = self.scriptRunner.isExecuting
+        cameraOn_state, cameraOff_state = self.model.bmoExposeState
 
-        isExposing = False
-        isRunning = False
-        self.exposeBtn.setEnable(not (isRunning or isExposing))
-        self.stopBtn.setEnable(isExposing)
+        exposing = cameraOn_state != 'idle' or cameraOff_state != 'idle'
+
+        self.exposeBtn.setEnable(not exposing)
+        self.stopBtn.setEnable(exposing)
 
     def startExposure(self):
         """Start exposure."""
 
         startCmdVar = opscore.actor.CmdVar(
             actor=self.actor,
-            cmdStr='expose start')
+            cmdStr='camera expose')
         self.statusBar.doCmd(startCmdVar)
 
     def stopExposure(self):
@@ -263,7 +292,7 @@ class BMOWdg(Tkinter.Frame):
 
         stopCmdVar = opscore.actor.CmdVar(
             actor=self.actor,
-            cmdStr='expose stop')
+            cmdStr='camera stop')
         self.statusBar.doCmd(stopCmdVar)
 
 
