@@ -305,6 +305,21 @@ class BMOWdg(Tkinter.Frame):
         self.ds9Wdg.grid(row=row, column=0, sticky='w')
         row += 1
 
+        self.centreUpFrame = Tkinter.Frame(self)
+        self.centreUpGridder = RO.Wdg.Gridder(master=self.centreUpFrame, sticky='w')
+
+        self.rotateCheck = RO.Wdg.Checkbutton(
+            master=self.centreUpFrame,
+            defValue=True,
+            text='Rotate',
+            helpText='Rotates the field')
+        self.rotateCheck.pack(side='left')
+
+        self.centreUpGridder.gridWdg('Centre up', self.rotateCheck)
+
+        self.centreUpFrame.grid(row=row, column=0, sticky='ew')
+        row += 1
+
         self.statusBar.grid(row=row, column=0, sticky='ew')
         row += 1
 
@@ -323,12 +338,30 @@ class BMOWdg(Tkinter.Frame):
             helpText='Stop current exposure')
         self.stopBtn.pack(side='left')
 
+        self.centreBtn = RO.Wdg.Button(
+            master=buttonFrame,
+            text='Centre Up',
+            command=self.centreUp,
+            helpText='Centres the field')
+        self.centreBtn.pack(side='right')
+
         buttonFrame.grid(row=row, column=0, sticky='ew')
         row += 1
 
         self.model.bmoExposeState.addCallback(self.enableButtons)
 
         self.enableButtons()
+
+    def centreUp(self):
+        """Centres the field."""
+
+        rotate = self.rotateCheck.getBool()
+
+        centreCmdVar = opscore.actor.CmdVar(
+            actor=self.actor,
+            cmdStr='centre_up -d {}'.format('--translate' if rotate is False else ''))
+
+        self.statusBar.doCmd(centreCmdVar)
 
     def getStateTracker(self):
         """Return the state tracker"""
