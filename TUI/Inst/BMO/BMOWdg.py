@@ -26,6 +26,7 @@ class BMOStatusWdg(Tkinter.Frame):
         Tkinter.Frame.__init__(self, master)
 
         self.model = TUI.Models.getModel(master.actor)
+        self.master = master
 
         gridder = RO.Wdg.Gridder(master=self, sticky='w')
         self.gridder = gridder
@@ -71,10 +72,18 @@ class BMOStatusWdg(Tkinter.Frame):
         self.onCameraWdg.set(strOn, isCurrent=keyVar.isCurrent)
         self.onCameraWdg.config(fg='black' if cameraOn else 'red')
 
+        # Sets exposure on-axis camera checkbox
+        self.master.exposureWdg.exposureOnCheck.setBool(cameraOn)
+        self.master.exposureWdg.exposureOnCheck.setEnable(cameraOn)
+
         strOff = '{}{}'.format('Connected' if cameraOff is True else 'Disconnected',
                                ' ({})'.format(deviceOff) if cameraOff is True else '')
         self.offCameraWdg.set(strOff, isCurrent=keyVar.isCurrent)
         self.offCameraWdg.config(fg='black' if cameraOff else 'red')
+
+        # Sets exposure off-axis camera checkbox
+        self.master.exposureWdg.exposureOffCheck.setBool(cameraOff)
+        self.master.exposureWdg.exposureOffCheck.setEnable(cameraOff)
 
     def _bmoVimbaStateCallback(self, keyVar):
         """Callback to set Vimba state."""
@@ -284,9 +293,19 @@ class BMOWdg(Tkinter.Frame):
     def startExposure(self):
         """Start exposure."""
 
+        onCheck = self.exposureWdg.exposureOnCheck.getBool()
+        offCheck = self.exposureWdg.exposureOffCheck.getBool()
+
+        if onCheck and offCheck:
+            camera_type = 'all'
+        elif onCheck and not offCheck:
+            camera_type = 'on'
+        else:
+            camera_type = 'off'
+
         startCmdVar = opscore.actor.CmdVar(
             actor=self.actor,
-            cmdStr='camera expose')
+            cmdStr='camera expose --camera_type={}'.format(camera_type))
         self.statusBar.doCmd(startCmdVar)
 
     def stopExposure(self):
