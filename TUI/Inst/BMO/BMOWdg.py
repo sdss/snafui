@@ -358,9 +358,15 @@ class BMOWdg(Tkinter.Frame):
         else:
             camera_type = 'off'
 
+        one = self.exposureWdg.singleExposureCheck.getBool()
+        background = self.exposureWdg.subtractBackCheck.getBool()
+
         startCmdVar = opscore.actor.CmdVar(
             actor=self.actor,
-            cmdStr='camera expose --camera_type={}'.format(camera_type))
+            cmdStr='camera expose --camera_type={}{} {}'.format(
+                camera_type, ' --one' if one else '',
+                '--background' if background else '--no-background'))
+
         self.statusBar.doCmd(startCmdVar)
 
     def stopExposure(self):
