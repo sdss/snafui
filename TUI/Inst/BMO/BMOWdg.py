@@ -68,7 +68,7 @@ class BMOStatusWdg(Tkinter.Frame):
         gridder.allGridded()
 
         self.model.bmoCamera.addCallback(self._bmoCameraCallback)
-        self.model.bmoVimbaState.addCallback(self._bmoVimbaStateCallback)
+        self.model.bmoVimbaVersion.addCallback(self._bmoVimbaVersionCallback)
         self.model.version.addCallback(self._setVersion)
 
     def _setVersion(self, keyVar):
@@ -91,13 +91,13 @@ class BMOStatusWdg(Tkinter.Frame):
         self.offCameraWdg.set(strOff, isCurrent=keyVar.isCurrent)
         self.offCameraWdg.config(fg='black' if cameraOff else 'red')
 
-    def _bmoVimbaStateCallback(self, keyVar):
-        """Callback to set Vimba state."""
+    def _bmoVimbaVersionCallback(self, keyVar):
+        """Callback to set Vimba version."""
 
-        vimbaState = keyVar[0]
-        fg = 'black' if vimbaState != 'Fake' else 'red'
+        vimbaVersion = keyVar[0]
+        fg = 'black' if vimbaVersion != 'Fake' else 'red'
 
-        self.vimbaWdg.set(vimbaState, isCurrent=keyVar.isCurrent)
+        self.vimbaWdg.set(vimbaVersion, isCurrent=keyVar.isCurrent)
         self.vimbaWdg.config(fg=fg)
 
 
