@@ -359,7 +359,7 @@ class BMOWdg(Tkinter.Frame):
 
         centreCmdVar = opscore.actor.CmdVar(
             actor=self.actor,
-            cmdStr='centre_up -d {}'.format('--translate' if rotate is False else ''))
+            cmdStr='centre_up {}'.format('--translate' if rotate is False else ''))
 
         self.statusBar.doCmd(centreCmdVar)
 
