@@ -16,6 +16,7 @@ import TUI.Inst.GuideMonitor.FocusMonitorWindow
 import TUI.Inst.GuideMonitor.GuideMonitorWindow
 import TUI.Inst.GuideMonitor.ScaleMonitorWindow
 import TUI.Inst.GuideMonitor.SeeingMonitorWindow
+import TUI.Inst.GuideMonitor.GuideRMSMonitorWindow
 import TUI.Inst.SOP.SOPWindow
 import TUI.Inst.BMO.BMOWindow
 import TUI.Misc.MessageWindow
@@ -48,6 +49,7 @@ def loadAll():
     TUI.Inst.GuideMonitor.GuideMonitorWindow.addWindow(tlSet)
     TUI.Inst.GuideMonitor.ScaleMonitorWindow.addWindow(tlSet)
     TUI.Inst.GuideMonitor.SeeingMonitorWindow.addWindow(tlSet)
+    TUI.Inst.GuideMonitor.GuideRMSMonitorWindow.addWindow(tlSet)
     TUI.Inst.SOP.SOPWindow.addWindow(tlSet)
     TUI.Inst.BMO.BMOWindow.addWindow(tlSet)
     TUI.Misc.MessageWindow.addWindow(tlSet)
