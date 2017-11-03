@@ -57,6 +57,7 @@ History:
                     Tweaked code to make display expand to the right of the displayed data.
 2012-07-10 ROwen    Modified to use RO.TkUtil.Timer
 2015-11-03 ROwen    Replace "== None" with "is None" and "!= None" with "is not None" to modernize the code.
+2017-11-03 CS       Report axis positions ot higher precision.
 """
 import time
 import Tkinter
@@ -145,7 +146,7 @@ class AxisStatusWdg(Tkinter.Frame):
         self._soundTimer = Timer()
 
         # magic numbers
-        PosPrec = 1 # number of digits past decimal point
+        PosPrec = 3 # number of digits past decimal point
         PosWidth = 5 + PosPrec  # assumes -999.99... degrees is longest field
         AxisCmdStateWidth = 8
         AxisErrCodeWidth = 13
