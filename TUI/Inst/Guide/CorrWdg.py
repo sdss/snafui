@@ -273,14 +273,14 @@ class CategoryInfo(object):
             didCorrStr = "No"
 
         for ind, itemInfo in enumerate(self.itemInfoList):
-            val = -keyVar[ind]
+            val = keyVar[ind]
             self.itemInfoList[ind].corrWdg.set(val, isCurrent=isCurrent)
             self.itemInfoList[ind].didCorrWdg.set(didCorrStr, isCurrent=isCurrent)
 
     def _measCallback(self, keyVar):
         isCurrent = keyVar.isCurrent
         for ind, itemInfo in enumerate(self.itemInfoList):
-            val = -keyVar[ind]
+            val = keyVar[ind]
             self.itemInfoList[ind].measWdg.set(val, isCurrent=isCurrent)
 
 
