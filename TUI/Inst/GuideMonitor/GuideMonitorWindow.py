@@ -45,7 +45,7 @@ class GuideMonitorWdg(Tkinter.Frame):
     """
     def __init__(self, master, timeRange=1800, width=9, height=9):
         """Create a GuideMonitorWdg
-        
+
         Inputs:
         - master: parent Tk widget
         - timeRange: range of time displayed (seconds)
@@ -56,7 +56,7 @@ class GuideMonitorWdg(Tkinter.Frame):
         self.tccModel = TUI.Models.getModel("tcc")
         self.guiderModel = TUI.Models.getModel("guider")
         self.probeInfoDict = dict() # dict of probe number (starting from 1): ProbeInfo
-        
+
         self.stripChartWdg = TUI.Base.StripChartWdg.StripChartWdg(
             master = self,
             timeRange = timeRange,
@@ -74,7 +74,7 @@ class GuideMonitorWdg(Tkinter.Frame):
         self.stripChartWdg.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=range(0, 61, 5)))
 
         subplotInd = 0
-        
+
         # RA/Dec arc offset subplot
         def arcsecFromPVT(val):
             return 3600.0 * RO.CnvUtil.posFromPVT(val)
@@ -186,7 +186,7 @@ class GuideMonitorWdg(Tkinter.Frame):
         self.stripChartWdg.subplotArr[subplotInd].yaxis.set_label_text("Seeing (\")")
         self.stripChartWdg.subplotArr[subplotInd].legend(loc=3, frameon=False)
         subplotInd += 1
-        
+
         # focus subplot
         self.stripChartWdg.plotKeyVar(
             label="Focus net offset",
@@ -210,7 +210,7 @@ class GuideMonitorWdg(Tkinter.Frame):
         self.stripChartWdg.subplotArr[subplotInd].yaxis.set_label_text("Focus (um)")
         self.stripChartWdg.subplotArr[subplotInd].legend(loc=3, frameon=False)
         subplotInd += 1
-        
+
         # scale subplot
         def cnvAbsScale(val):
             return (val - 1.0) * 1.0e6
@@ -239,10 +239,10 @@ class GuideMonitorWdg(Tkinter.Frame):
             color="green",
         )
         self.stripChartWdg.addConstantLine(0.0, subplotInd=subplotInd, color="gray")
-        self.stripChartWdg.subplotArr[subplotInd].yaxis.set_label_text("Scale 1e6")
+        self.stripChartWdg.subplotArr[subplotInd].yaxis.set_label_text(u"\u0394Scale x 1e-6 / 100")
         self.stripChartWdg.subplotArr[subplotInd].legend(loc=3, frameon=False)
         subplotInd += 1
-        
+
         self.guiderModel.probe.addCallback(self.probeCallback)
 
         self.clearWdg = RO.Wdg.Button(master = self, text = "C", callFunc = self.clearCharts)
@@ -250,11 +250,11 @@ class GuideMonitorWdg(Tkinter.Frame):
 
     def cartridgeLoadedCallback(self, keyVar):
         """guider.cartridgeLoaded keyvar callback
-        
+
         When seen ditch all guide-probe-specific lines
         """
         self.clearProbeInfo()
-    
+
     def clearCharts(self, wdg=None):
         """Clear all strip charts
         """
@@ -269,7 +269,7 @@ class GuideMonitorWdg(Tkinter.Frame):
 
     def probeCallback(self, keyVar):
         """guider.probe callback
-        
+
         If guide probe is broken, unused or out of focus do nothing. Otherwise:
         - If probeInfo does not exist, create it and the associated plot line
         - Plot data. If probe is disabled then plot "nan" so that no point shows
@@ -313,7 +313,7 @@ class ProbeInfo(object):
 
     def plotData(self, keyVar):
         """guider.probe callback
-        
+
         Plot data. If probe is disabled then plot "nan" so that no point shows
         an lines remain broken if the probe is re-enabled later.
         """
@@ -326,12 +326,12 @@ class ProbeInfo(object):
         else:
 #            print "%s.plotData(%s); plot %s" % (self, keyVar, keyVar[5])
             self.fwhmLine.addPoint(keyVar[5])
-        
+
     def remove(self):
         """Remove all associated plot lines
         """
         self.stripChartWdg.remove(self.fwhmLine)
-    
+
     def __str__(self):
         return "ProbeInfo(%s)" % (self.num,)
 
@@ -341,7 +341,7 @@ if __name__ == "__main__":
 
     addWindow(TestData.tuiModel.tlSet)
     TestData.tuiModel.tlSet.makeVisible(WindowName)
-    
+
     TestData.runTest()
-    
+
     TestData.tuiModel.reactor.run()
