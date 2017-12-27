@@ -113,6 +113,9 @@ class FocusPlotWdg(Tkinter.Frame):
 
         self.plotAxis.set_title(imObj.imageName)
 
+        ylim = self.plotAxis.get_ylim()
+        self.plotAxis.set_ylim(0.4, ylim[1])
+
         legend = self.plotAxis.legend(loc=4, numpoints=1)
         legend.draw_frame(False)
 
@@ -204,9 +207,8 @@ class FocusPlotWdg(Tkinter.Frame):
         self.plotAxis.clear()
         self.plotAxis.grid(True)
         # start with autoscale disabled due to bug in matplotlib
-        self.plotAxis.set_autoscale_on(False)
+        self.plotAxis.set_autoscale_on(True)
         self.plotAxis.set_xlim(-800, 800)
-        self.plotAxis.set_ylim(bottom=0.4)
         self.plotAxis.set_xlabel("Guide probe focus offset (um)")
         self.plotAxis.set_ylabel("Guide star FWHM (arcsec)")
         self.figCanvas.draw()
