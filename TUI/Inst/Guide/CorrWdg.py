@@ -398,7 +398,8 @@ class FocusInfo(CategoryInfo):
         cmdList = []
         if not self.itemInfoList[0].isClear:
             focusOff = self.itemInfoList[0].getUserCorr()
-            cmdStr = "set focus=%0.1f/incremental" % (focusOff,)
+            # Negative sign to match LCO convention.
+            cmdStr = "set focus=%0.1f/incremental" % (-focusOff,)
             cmdList.append(("tcc", cmdStr, (0,)))
         return cmdList
 
@@ -441,7 +442,8 @@ class ScaleInfo(CategoryInfo):
         if not self.itemInfoList[0].isClear:
             megaScaleOff = self.itemInfoList[0].getUserCorr()
             pctScaleOff = megaScaleOff * 1.0e-4
-            cmdStr = "setScale delta=%0.5f" % (pctScaleOff,)
+            # Negative sign to match LCO convention.
+            cmdStr = "setScale delta=%0.5f" % (-pctScaleOff,)
             cmdList.append(("guider", cmdStr, (0,)))
         return cmdList
 
