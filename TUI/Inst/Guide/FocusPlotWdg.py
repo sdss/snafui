@@ -113,8 +113,11 @@ class FocusPlotWdg(Tkinter.Frame):
 
         self.plotAxis.set_title(imObj.imageName)
 
+        ymin = 0.4
         ylim = self.plotAxis.get_ylim()
-        self.plotAxis.set_ylim(0.4, ylim[1])
+
+        if ylim[1] > ymin:
+            self.plotAxis.set_ylim(ymin, ylim[1])
 
         legend = self.plotAxis.legend(loc=4, numpoints=1)
         legend.draw_frame(False)
