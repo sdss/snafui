@@ -398,8 +398,7 @@ class FocusInfo(CategoryInfo):
         cmdList = []
         if not self.itemInfoList[0].isClear:
             focusOff = self.itemInfoList[0].getUserCorr()
-            # Negative sign to match LCO convention.
-            cmdStr = "set focus=%0.1f/incremental" % (-focusOff,)
+            cmdStr = "set focus=%0.1f/incremental" % (focusOff,)
             cmdList.append(("tcc", cmdStr, (0,)))
         return cmdList
 
