@@ -10,7 +10,6 @@ import tkMessageBox
 import RO.Constants
 import RO.OS
 from RO.StringUtil import strFromException
-import TUI
 import TUI.Base.Wdg
 import TUI.TUIPaths
 import TUI.Models
@@ -33,10 +32,7 @@ def getScriptDirs():
     addScriptDirs = [path for path in addScriptDirs if os.path.isdir(path)]
 
     # prepend the standard script dir and remove duplicates
-    if TUI.FLAVOR == "LCO":
-        stdScriptDir = TUI.TUIPaths.getResourceDir("ScriptsLCO")
-    else:
-        stdScriptDir = TUI.TUIPaths.getResourceDir("Scripts")
+    stdScriptDir = TUI.TUIPaths.getResourceDir("Scripts")
     scriptDirs = [stdScriptDir] + addScriptDirs
     scriptDirs = RO.OS.removeDupPaths(scriptDirs)
     return scriptDirs
@@ -57,7 +53,7 @@ class ScriptLoader:
         self.fullPath = fullPath
         self.showErrDialog = bool(showErrDialog)
         self.tuiModel = TUI.Models.getModel("tui")
-
+    
     def __call__(self):
         """If the script window exists, bring it to the front.
         Otherwise, load the script file into a new script window.
