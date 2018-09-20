@@ -47,8 +47,8 @@ class ScriptClass(object):
     
         self.logWdg.addMsg('%s, v-%s ' % (self.name,self.ver))
         self.logWdg.addMsg("   %s " % ("  60-reads dark"))
-        self.logWdg.addMsg("   %s " % ("  QuartzFlat"))
         self.logWdg.addMsg("   %s " % ("  ThAr and UNe at both dither A and dither B"))
+        self.logWdg.addMsg("   %s " % ("  QuartzFlat"))
         self.logWdg.addMsg("   %s " % ("  60-reads dark"))
         self.logWdg.addMsg("-"*20)
                                          

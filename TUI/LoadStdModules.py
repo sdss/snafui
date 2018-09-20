@@ -11,6 +11,7 @@ import TUI.Inst.APOGEE.APOGEEWindow
 import TUI.Inst.APOGEEQL.APOGEEQLWindow
 import TUI.Inst.Guide.FocusPlotWindow
 import TUI.Inst.Guide.GuideWindow
+import TUI.Inst.GuideMonitor.AxisMonitorWindow
 import TUI.Inst.GuideMonitor.FluxMonitorWindow
 import TUI.Inst.GuideMonitor.FocusMonitorWindow
 import TUI.Inst.GuideMonitor.GuideMonitorWindow
@@ -44,6 +45,7 @@ def loadAll():
     TUI.Inst.APOGEEQL.APOGEEQLWindow.addWindow(tlSet)
     TUI.Inst.Guide.FocusPlotWindow.addWindow(tlSet)
     TUI.Inst.Guide.GuideWindow.addWindow(tlSet)
+    TUI.Inst.GuideMonitor.AxisMonitorWindow.addWindow(tlSet)
     TUI.Inst.GuideMonitor.FluxMonitorWindow.addWindow(tlSet)
     TUI.Inst.GuideMonitor.FocusMonitorWindow.addWindow(tlSet)
     TUI.Inst.GuideMonitor.GuideMonitorWindow.addWindow(tlSet)
